@@ -317,29 +317,34 @@ class Character:
         self.oil = 5
 
     def move(self, move, board):
+        global STEPS_TAKEN
         if LOST_YET == False:
             if move == UP:
                 self.lastmove = UP
                 self.lasty = self.y
                 if self.y > 0 and 'ground' in board[self.x][self.y-1].tiletype:
                     self.y -= 1
+                    STEPS_TAKEN += 1
             elif move == DOWN:
                 self.lastmove = DOWN
                 self.lasty = self.y
                 if self.y < BOARDHEIGHT - 1 and 'ground' in board[self.x][self.y+1].tiletype:
                     self.y += 1
+                    STEPS_TAKEN += 1
             elif move == LEFT:
                 self.lastmove = LEFT
                 self.lastx = self.x
                 if self.x > 0 and 'ground' in board[self.x-1][self.y].tiletype:
                     self.x -= 1
+                    STEPS_TAKEN += 1
             elif move == RIGHT:
                 self.lastmove = RIGHT
                 self.lastx = self.x
                 if self.x < BOARDWIDTH - 1 and 'ground' in board[self.x+1][self.y].tiletype:
                     self.x += 1
-            global STEPS_TAKEN
-            STEPS_TAKEN += 1
+                    STEPS_TAKEN += 1
+
+
     def light(self, board):
         board[self.x][self.y].brighten()
         if self.x > 0:
