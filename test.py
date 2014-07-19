@@ -62,6 +62,17 @@ dedgeTile = pygame.image.load('tiles/dedge.png')
 ledgeTile = pygame.image.load('tiles/ledge.png')
 redgeTile = pygame.image.load('tiles/redge.png')
 
+dmovel = pygame.image.load('sprites/dmovel.png')
+dmover = pygame.image.load('sprites/dmover.png')
+dstill = pygame.image.load('sprites/dstill.png')
+lmove = pygame.image.load('sprites/lmove.png')
+lstill = pygame.image.load('sprites/lstill.png')
+rmove = pygame.image.load('sprites/rmove.png')
+rstill = pygame.image.load('sprites/rstill.png')
+umovel = pygame.image.load('sprites/umovel.png')
+umover = pygame.image.load('sprites/umover.png')
+ustill = pygame.image.load('sprites/ustill.png')
+
 def main():
     global FPSCLOCK, DISPLAYSURF, BASICFONT
 
@@ -129,7 +140,7 @@ def generateBoard():
     board[2][2] = Tile('rtwall')
     board[2][3] = Tile('udwall')
     board[2][4] = Tile('udwall')
-    board[2][5] = Tile('udwall')
+    board[2][5] = Tile('dend')
     board[2][8] = Tile('lrwall')
     board[3][2] = Tile('lrwall')
     board[3][8] = Tile('lrwall')
@@ -177,7 +188,6 @@ def generateBoard():
     board[13][7] = Tile('udwall')
     board[13][8] = Tile('dlwall')
     board[14][8] = Tile('redge')
-
     return board
 
 def drawBoard(board):
@@ -266,20 +276,31 @@ class Character:
         self.name = name
         self.x = BOARDWIDTH // 2
         self.y = BOARDHEIGHT // 2
+        self.lastx = self.x
+        self.lasty = self.y
+        self.lastmove = DOWN
         self.oil = 5
 
     def move(self, move, board):
         if move == UP:
+            self.lastmove = UP
             if self.y > 0 and 'ground' in board[self.x][self.y-1].tiletype:
+                self.lasty = self.y
                 self.y -= 1
         elif move == DOWN:
+            self.lastmove = DOWN
             if self.y < BOARDHEIGHT - 1 and 'ground' in board[self.x][self.y+1].tiletype:
+                self.lasty = self.y
                 self.y += 1
         elif move == LEFT:
+            self.lastmove = LEFT
             if self.x > 0 and 'ground' in board[self.x-1][self.y].tiletype:
+                self.lastx = self.x
                 self.x -= 1
         elif move == RIGHT:
+            self.lastmove = RIGHT
             if self.x < BOARDWIDTH - 1 and 'ground' in board[self.x+1][self.y].tiletype:
+                self.lastx = self.x
                 self.x += 1
 
     def light(self, board):
@@ -295,7 +316,24 @@ class Character:
 
     def drawChar(self):
         left, top = getLeftTopOfTile(self.x, self.y)
-        pygame.draw.circle(DISPLAYSURF, WHITE, (left + TILESIZE // 2, top + TILESIZE // 2), TILESIZE // 2)
+        if self.x == self.lastx and self.y == self.lasty:
+            if self.lastmove == UP:
+                DISPLAYSURF.blit(ustill,(left, top))
+            elif self.lastmove == DOWN:
+                DISPLAYSURF.blit(dstill,(left, top))
+            elif self.lastmove == LEFT:
+                DISPLAYSURF.blit(lstill,(left, top))
+            elif self.lastmove == RIGHT:
+                DISPLAYSURF.blit(rstill,(left, top))
+        else:
+            if self.lastmove == UP:
+                DISPLAYSURF.blit(umover,(left, top))
+            elif self.lastmove == DOWN:
+                DISPLAYSURF.blit(dmover,(left, top))
+            elif self.lastmove == LEFT:
+                DISPLAYSURF.blit(lmove,(left, top))
+            elif self.lastmove == RIGHT:
+                DISPLAYSURF.blit(rmove,(left, top))
 
 if __name__ == '__main__':
     main()
