@@ -2,7 +2,7 @@ Lamplit
 =========
 
 Join Little Timmy as he vanquishes the darkness within his heart to find the hidden treasure!
-Help him navigate through the darkness but make sure not to take too many steps! Or else...
+Help him navigate through the darkness but watch your steps!
 
 Press 'UP' or 'W' to move up. 
 Press 'DOWN' or 'S' to move down. 
