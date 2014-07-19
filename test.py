@@ -62,6 +62,17 @@ dedgeTile = pygame.image.load('tiles/dedge.png')
 ledgeTile = pygame.image.load('tiles/ledge.png')
 redgeTile = pygame.image.load('tiles/redge.png')
 
+dmovel = pygame.image.load('sprites/dmovel.png')
+dmover = pygame.image.load('sprites/dmover.png')
+dstill = pygame.image.load('sprites/dstill.png')
+lmove = pygame.image.load('sprites/lmove.png')
+lstill = pygame.image.load('sprites/lstill.png')
+rmove = pygame.image.load('sprites/rmove.png')
+rstill = pygame.image.load('sprites/rstill.png')
+umovel = pygame.image.load('sprites/umovel.png')
+umover = pygame.image.load('sprites/umover.png')
+ustill = pygame.image.load('sprites/ustill.png')
+
 def main():
     global FPSCLOCK, DISPLAYSURF, BASICFONT
 
@@ -122,10 +133,61 @@ def generateBoard():
     board[BOARDWIDTH-1][0] = Tile('urground')
     board[BOARDWIDTH-1][BOARDHEIGHT-1] = Tile('drground')
     board[0][BOARDHEIGHT-1] = Tile('dlground')
-    board[2][2] = Tile('lend')
-    board[2][8] = Tile('uend')
-    board[2][9] = Tile('dlwall')
-    board[3][2] = Tile('urwall')
+    board[1][1] = Tile('lend')
+    board[1][7] = Tile('uend')
+    board[1][8] = Tile('dlwall')
+    board[2][1] = Tile('urwall')
+    board[2][2] = Tile('rtwall')
+    board[2][3] = Tile('udwall')
+    board[2][4] = Tile('udwall')
+    board[2][5] = Tile('dend')
+    board[2][8] = Tile('lrwall')
+    board[3][2] = Tile('lrwall')
+    board[3][8] = Tile('lrwall')
+    board[4][1] = Tile('ulwall')
+    board[4][2] = Tile('ltwall')
+    board[4][3] = Tile('dend')
+    board[4][6] = Tile('uend')
+    board[4][7] = Tile('rtwall')
+    board[4][8] = Tile('ltwall')
+    board[4][9] = Tile('dedge')
+    board[5][0] = Tile('uedge')
+    board[5][1] = Tile('utwall')
+    board[5][7] = Tile('rend')
+    board[6][1] = Tile('lrwall')
+    board[7][1] = Tile('urwall')
+    board[7][2] = Tile('udwall')
+    board[7][3] = Tile('dlwall')
+    board[7][6] = Tile('lend')
+    board[7][8] = Tile('lend')
+    board[8][3] = Tile('lrwall')
+    board[8][6] = Tile('dtwall')
+    board[8][7] = Tile('udwall')
+    board[8][8] = Tile('utwall')
+    board[9][1] = Tile('lend')
+    board[9][3] = Tile('rend')
+    board[9][5] = Tile('uend')
+    board[9][6] = Tile('drwall')
+    board[9][8] = Tile('lrwall')
+    board[10][1] = Tile('lrwall')
+    board[10][8] = Tile('lrwall')
+    board[11][1] = Tile('lrwall')
+    board[11][3] = Tile('ulwall')
+    board[11][4] = Tile('udwall')
+    board[11][5] = Tile('udwall')
+    board[11][6] = Tile('rtwall')
+    board[11][7] = Tile('udwall')
+    board[11][8] = Tile('drwall')
+    board[12][1] = Tile('urwall')
+    board[12][2] = Tile('udwall')
+    board[12][3] = Tile('utwall')
+    board[12][6] = Tile('lrwall')
+    board[13][3] = Tile('urwall')
+    board[13][4] = Tile('dend')
+    board[13][6] = Tile('urwall')
+    board[13][7] = Tile('udwall')
+    board[13][8] = Tile('dlwall')
+    board[14][8] = Tile('redge')
     return board
 
 def drawBoard(board):
@@ -214,20 +276,31 @@ class Character:
         self.name = name
         self.x = BOARDWIDTH // 2
         self.y = BOARDHEIGHT // 2
+        self.lastx = self.x
+        self.lasty = self.y
+        self.lastmove = DOWN
         self.oil = 5
 
     def move(self, move, board):
         if move == UP:
+            self.lastmove = UP
             if self.y > 0 and 'ground' in board[self.x][self.y-1].tiletype:
+                self.lasty = self.y
                 self.y -= 1
         elif move == DOWN:
+            self.lastmove = DOWN
             if self.y < BOARDHEIGHT - 1 and 'ground' in board[self.x][self.y+1].tiletype:
+                self.lasty = self.y
                 self.y += 1
         elif move == LEFT:
+            self.lastmove = LEFT
             if self.x > 0 and 'ground' in board[self.x-1][self.y].tiletype:
+                self.lastx = self.x
                 self.x -= 1
         elif move == RIGHT:
+            self.lastmove = RIGHT
             if self.x < BOARDWIDTH - 1 and 'ground' in board[self.x+1][self.y].tiletype:
+                self.lastx = self.x
                 self.x += 1
 
     def light(self, board):
@@ -243,7 +316,24 @@ class Character:
 
     def drawChar(self):
         left, top = getLeftTopOfTile(self.x, self.y)
-        pygame.draw.circle(DISPLAYSURF, WHITE, (left + TILESIZE // 2, top + TILESIZE // 2), TILESIZE // 2)
+        if self.x == self.lastx and self.y == self.lasty:
+            if self.lastmove == UP:
+                DISPLAYSURF.blit(ustill,(left, top))
+            elif self.lastmove == DOWN:
+                DISPLAYSURF.blit(dstill,(left, top))
+            elif self.lastmove == LEFT:
+                DISPLAYSURF.blit(lstill,(left, top))
+            elif self.lastmove == RIGHT:
+                DISPLAYSURF.blit(rstill,(left, top))
+        else:
+            if self.lastmove == UP:
+                DISPLAYSURF.blit(umover,(left, top))
+            elif self.lastmove == DOWN:
+                DISPLAYSURF.blit(dmover,(left, top))
+            elif self.lastmove == LEFT:
+                DISPLAYSURF.blit(lmove,(left, top))
+            elif self.lastmove == RIGHT:
+                DISPLAYSURF.blit(rmove,(left, top))
 
 if __name__ == '__main__':
     main()
