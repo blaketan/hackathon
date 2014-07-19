@@ -5,7 +5,7 @@ import random
 
 class Player(x = 400,y = 300):
 # this class refers to the player object
-	def __init__(self,x,y)
+	def __init__(self,x,y):
 
 
 
@@ -26,10 +26,11 @@ done = False
 player()
 
 while not done:
+	#check for win condition
 	for event in pygame.event.get()
 	    if event.type == pygame.QUIT:
             done = True
-        elif event = pygame.KEYUP
+        elif event = pygame.event.KEYUP
 
 
 
