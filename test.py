@@ -34,6 +34,33 @@ LEFT = 'left'
 RIGHT = 'right'
 
 groundTile = pygame.image.load('tiles/ground.png')
+ugroundTile = pygame.image.load('tiles/uground.png')
+dgroundTile = pygame.image.load('tiles/dground.png')
+lgroundTile = pygame.image.load('tiles/lground.png')
+rgroundTile = pygame.image.load('tiles/rground.png')
+ulgroundTile = pygame.image.load('tiles/ulground.png')
+urgroundTile = pygame.image.load('tiles/urground.png')
+dlgroundTile = pygame.image.load('tiles/dlground.png')
+drgroundTile = pygame.image.load('tiles/drground.png')
+cwallTile = pygame.image.load('tiles/cwall.png')
+udwallTile = pygame.image.load('tiles/udwall.png')
+lrwallTile = pygame.image.load('tiles/lrwall.png')
+ulwallTile = pygame.image.load('tiles/ulwall.png')
+urwallTile = pygame.image.load('tiles/urwall.png')
+dlwallTile = pygame.image.load('tiles/dlwall.png')
+drwallTile = pygame.image.load('tiles/drwall.png')
+utwallTile = pygame.image.load('tiles/utwall.png')
+dtwallTile = pygame.image.load('tiles/dtwall.png')
+ltwallTile = pygame.image.load('tiles/ltwall.png')
+rtwallTile = pygame.image.load('tiles/rtwall.png')
+uendTile = pygame.image.load('tiles/uend.png')
+dendTile = pygame.image.load('tiles/dend.png')
+lendTile = pygame.image.load('tiles/lend.png')
+rendTile = pygame.image.load('tiles/rend.png')
+uedgeTile = pygame.image.load('tiles/uedge.png')
+dedgeTile = pygame.image.load('tiles/dedge.png')
+ledgeTile = pygame.image.load('tiles/ledge.png')
+redgeTile = pygame.image.load('tiles/redge.png')
 
 def main():
     global FPSCLOCK, DISPLAYSURF, BASICFONT
@@ -54,13 +81,13 @@ def main():
         for event in pygame.event.get():
             if event.type == KEYUP:
                 if event.key in (K_LEFT, K_a):
-                    character.move(LEFT)
+                    character.move(LEFT, mainBoard)
                 elif event.key in (K_RIGHT, K_d):
-                    character.move(RIGHT)
+                    character.move(RIGHT, mainBoard)
                 elif event.key in (K_UP, K_w):
-                    character.move(UP)
+                    character.move(UP, mainBoard)
                 elif event.key in (K_DOWN, K_s):
-                    character.move(DOWN)
+                    character.move(DOWN, mainBoard)
         character.light(mainBoard)
 
         pygame.display.update()
@@ -85,6 +112,20 @@ def generateBoard():
         for y in range(BOARDHEIGHT):
             column.append(Tile())
         board.append(column)
+    for x in range(1,BOARDWIDTH-1):
+        board[x][0] = Tile('uground')
+        board[x][BOARDHEIGHT-1] = Tile('dground')
+    for y in range(1,BOARDHEIGHT-1):
+        board[0][y] = Tile('lground')
+        board[BOARDWIDTH-1][y] = Tile('rground')
+    board[0][0] = Tile('ulground')
+    board[BOARDWIDTH-1][0] = Tile('urground')
+    board[BOARDWIDTH-1][BOARDHEIGHT-1] = Tile('drground')
+    board[0][BOARDHEIGHT-1] = Tile('dlground')
+    board[2][2] = Tile('lend')
+    board[2][8] = Tile('uend')
+    board[2][9] = Tile('dlwall')
+    board[3][2] = Tile('urwall')
     return board
 
 def drawBoard(board):
@@ -109,7 +150,62 @@ class Tile:
     def drawTile(self, tilex, tiley):
         left, top = getLeftTopOfTile(tilex, tiley)
         if self.light:
-            DISPLAYSURF.blit(groundTile,(left, top))
+            if self.tiletype == 'ground':
+                DISPLAYSURF.blit(groundTile,(left, top))
+            elif self.tiletype == 'uground':
+                DISPLAYSURF.blit(ugroundTile,(left, top))
+            elif self.tiletype == 'dground':
+                DISPLAYSURF.blit(dgroundTile,(left, top))
+            elif self.tiletype == 'lground':
+                DISPLAYSURF.blit(lgroundTile,(left, top))
+            elif self.tiletype == 'rground':
+                DISPLAYSURF.blit(rgroundTile,(left, top))
+            elif self.tiletype == 'ulground':
+                DISPLAYSURF.blit(ulgroundTile,(left, top))
+            elif self.tiletype == 'urground':
+                DISPLAYSURF.blit(urgroundTile,(left, top))
+            elif self.tiletype == 'dlground':
+                DISPLAYSURF.blit(dlgroundTile,(left, top))
+            elif self.tiletype == 'drground':
+                DISPLAYSURF.blit(drgroundTile,(left, top))
+            elif self.tiletype == 'cwall':
+                DISPLAYSURF.blit(cwallTile,(left, top))
+            elif self.tiletype == 'udwall':
+                DISPLAYSURF.blit(udwallTile,(left, top))
+            elif self.tiletype == 'lrwall':
+                DISPLAYSURF.blit(lrwallTile,(left, top))
+            elif self.tiletype == 'ulwall':
+                DISPLAYSURF.blit(ulwallTile,(left, top))
+            elif self.tiletype == 'urwall':
+                DISPLAYSURF.blit(urwallTile,(left, top))
+            elif self.tiletype == 'dlwall':
+                DISPLAYSURF.blit(dlwallTile,(left, top))
+            elif self.tiletype == 'drwall':
+                DISPLAYSURF.blit(drwallTile,(left, top))
+            elif self.tiletype == 'utwall':
+                DISPLAYSURF.blit(utwallTile,(left, top))
+            elif self.tiletype == 'dtwall':
+                DISPLAYSURF.blit(dtwallTile,(left, top))
+            elif self.tiletype == 'ltwall':
+                DISPLAYSURF.blit(ltwallTile,(left, top))
+            elif self.tiletype == 'rtwall':
+                DISPLAYSURF.blit(rtwallTile,(left, top))
+            elif self.tiletype == 'uend':
+                DISPLAYSURF.blit(uendTile,(left, top))
+            elif self.tiletype == 'dend':
+                DISPLAYSURF.blit(dendTile,(left, top))
+            elif self.tiletype == 'lend':
+                DISPLAYSURF.blit(lendTile,(left, top))
+            elif self.tiletype == 'rend':
+                DISPLAYSURF.blit(rendTile,(left, top))
+            elif self.tiletype == 'uedge':
+                DISPLAYSURF.blit(uedgeTile,(left, top))
+            elif self.tiletype == 'dedge':
+                DISPLAYSURF.blit(dedgeTile,(left, top))
+            elif self.tiletype == 'ledge':
+                DISPLAYSURF.blit(ledgeTile,(left, top))
+            elif self.tiletype == 'redge':
+                DISPLAYSURF.blit(redgeTile,(left, top))
         else:
             pygame.draw.rect(DISPLAYSURF, BLACK, (left, top, TILESIZE, TILESIZE))
 
@@ -118,19 +214,20 @@ class Character:
         self.name = name
         self.x = BOARDWIDTH // 2
         self.y = BOARDHEIGHT // 2
+        self.oil = 5
 
-    def move(self, move):
+    def move(self, move, board):
         if move == UP:
-            if self.y > 0:
+            if self.y > 0 and 'ground' in board[self.x][self.y-1].tiletype:
                 self.y -= 1
         elif move == DOWN:
-            if self.y < BOARDHEIGHT - 1:
+            if self.y < BOARDHEIGHT - 1 and 'ground' in board[self.x][self.y+1].tiletype:
                 self.y += 1
         elif move == LEFT:
-            if self.x > 0:
+            if self.x > 0 and 'ground' in board[self.x-1][self.y].tiletype:
                 self.x -= 1
         elif move == RIGHT:
-            if self.x < BOARDWIDTH - 1:
+            if self.x < BOARDWIDTH - 1 and 'ground' in board[self.x+1][self.y].tiletype:
                 self.x += 1
 
     def light(self, board):
