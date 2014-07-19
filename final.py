@@ -212,12 +212,12 @@ def check_for_win(board):
         for tile in column:
             if tile.light >0:
                 light_sum += 1
-    if STEPS_TAKEN > MOVE_LIMIT:
+    if TREASURE_FOUND:
+        return BASICFONT.render("You win! You found the light.", 1, (0,255,0))
+    elif STEPS_TAKEN > MOVE_LIMIT:
         global LOST_YET
         LOST_YET = True
         return BASICFONT.render("You lost your heart to the darkness", 1, (255,0,0))
-    elif TREASURE_FOUND:
-        return BASICFONT.render("You win! You found the light.", 1, (0,255,0))
     elif light_sum == total_condition:
         return BASICFONT.render("You win! You lit up the night.", 1, (0,255,0))
     elif MOVE_LIMIT - STEPS_TAKEN <15:
