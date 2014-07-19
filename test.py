@@ -1,10 +1,10 @@
 import pygame, sys, random
 from pygame.locals import *
 
-BOARDWIDTH = 5
-BOARDHEIGHT = 5
+BOARDWIDTH = 15
+BOARDHEIGHT = 10
 TILESIZE = 40
-WINDOWWIDTH = 640
+WINDOWWIDTH = 750
 WINDOWHEIGHT = 480
 FPS = 30
 
@@ -15,7 +15,7 @@ GREEN = (0, 204, 0)
 BLUE = (0, 0, 255)
 BRIGHTBLUE = (0, 50, 255)
 DARKTURQUOISE = (3, 54, 73)
-BGCOLOR = DARKTURQUOISE
+BGCOLOR = BLACK
 TILECOLOR = GREEN
 TEXTCOLOR = WHITE
 BORDERCOLOR = BRIGHTBLUE
@@ -59,6 +59,7 @@ def main():
                     character.move(UP)
                 elif event.key in (K_DOWN, K_s):
                     character.move(DOWN)
+        character.light(mainBoard)
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
@@ -91,8 +92,8 @@ def drawBoard(board):
             board[tilex][tiley].drawTile(tilex, tiley)
 
 def getLeftTopOfTile(tilex, tiley):
-    left = XMARGIN + (tilex * TILESIZE) + (tilex - 1)
-    top = YMARGIN + (tiley * TILESIZE) + (tiley - 1)
+    left = XMARGIN + (tilex * TILESIZE)
+    top = YMARGIN + (tiley * TILESIZE)
     return left, top
 
 class Tile:
@@ -105,25 +106,41 @@ class Tile:
 
     def drawTile(self, tilex, tiley):
         left, top = getLeftTopOfTile(tilex, tiley)
-        pygame.draw.rect(DISPLAYSURF, TILECOLOR, (left, top, TILESIZE, TILESIZE))
+        if self.light:
+            color = TILECOLOR
+        else:
+            color = BLACK
+        pygame.draw.rect(DISPLAYSURF, color, (left, top, TILESIZE, TILESIZE))
 
 class Character:
     def __init__(self, name = 'Name'):
         self.name = name
-        self.pos = [0,0]
+        self.x = BOARDWIDTH // 2
+        self.y = BOARDHEIGHT // 2
 
     def move(self, move):
         if move == UP:
-            self.pos[1] -= 1
+            self.y -= 1
         elif move == DOWN:
-            self.pos[1] += 1
+            self.y += 1
         elif move == LEFT:
-            self.pos[0] -= 1
+            self.x -= 1
         elif move == RIGHT:
-            self.pos[0] += 1
+            self.x += 1
+
+    def light(self, board):
+        board[self.x][self.y].brighten()
+        if self.x > 0:
+            board[self.x-1][self.y].brighten()
+        if self.x < BOARDWIDTH - 1:
+            board[self.x+1][self.y].brighten()
+        if self.y > 0:
+            board[self.x][self.y-1].brighten()
+        if self.y < BOARDHEIGHT - 1:
+            board[self.x][self.y+1].brighten()
 
     def drawChar(self):
-        left, top = getLeftTopOfTile(self.pos[0], self.pos[1])
+        left, top = getLeftTopOfTile(self.x, self.y)
         pygame.draw.circle(DISPLAYSURF, WHITE, (left + TILESIZE // 2, top + TILESIZE // 2), TILESIZE // 2)
 
 if __name__ == '__main__':
