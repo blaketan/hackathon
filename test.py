@@ -33,6 +33,8 @@ DOWN = 'down'
 LEFT = 'left'
 RIGHT = 'right'
 
+groundTile = pygame.image.load('tiles/ground.png')
+
 def main():
     global FPSCLOCK, DISPLAYSURF, BASICFONT
 
@@ -107,10 +109,9 @@ class Tile:
     def drawTile(self, tilex, tiley):
         left, top = getLeftTopOfTile(tilex, tiley)
         if self.light:
-            color = TILECOLOR
+            DISPLAYSURF.blit(groundTile,(left, top))
         else:
-            color = BLACK
-        pygame.draw.rect(DISPLAYSURF, color, (left, top, TILESIZE, TILESIZE))
+            pygame.draw.rect(DISPLAYSURF, BLACK, (left, top, TILESIZE, TILESIZE))
 
 class Character:
     def __init__(self, name = 'Name'):
