@@ -72,6 +72,7 @@ rstill = pygame.image.load('sprites/rstill.png')
 umovel = pygame.image.load('sprites/umovel.png')
 umover = pygame.image.load('sprites/umover.png')
 ustill = pygame.image.load('sprites/ustill.png')
+treasureSprite = pygame.image.load('sprites/treasure.png')
 
 def main():
     global FPSCLOCK, DISPLAYSURF, BASICFONT
@@ -84,9 +85,11 @@ def main():
 
     mainBoard = generateBoard()
     character = Character()
+    treasure = Treasure()
 
     while True:
         drawBoard(mainBoard)
+        treasure.drawTreasure(mainBoard)
         character.drawChar()
         checkForQuit()
         for event in pygame.event.get():
@@ -272,7 +275,7 @@ class Tile:
             pygame.draw.rect(DISPLAYSURF, BLACK, (left, top, TILESIZE, TILESIZE))
 
 class Character:
-    def __init__(self, name = 'Name'):
+    def __init__(self, name = 'Timmy'):
         self.name = name
         self.x = BOARDWIDTH // 2
         self.y = BOARDHEIGHT // 2
@@ -284,23 +287,23 @@ class Character:
     def move(self, move, board):
         if move == UP:
             self.lastmove = UP
+            self.lasty = self.y
             if self.y > 0 and 'ground' in board[self.x][self.y-1].tiletype:
-                self.lasty = self.y
                 self.y -= 1
         elif move == DOWN:
             self.lastmove = DOWN
+            self.lasty = self.y
             if self.y < BOARDHEIGHT - 1 and 'ground' in board[self.x][self.y+1].tiletype:
-                self.lasty = self.y
                 self.y += 1
         elif move == LEFT:
             self.lastmove = LEFT
+            self.lastx = self.x
             if self.x > 0 and 'ground' in board[self.x-1][self.y].tiletype:
-                self.lastx = self.x
                 self.x -= 1
         elif move == RIGHT:
             self.lastmove = RIGHT
+            self.lastx = self.x
             if self.x < BOARDWIDTH - 1 and 'ground' in board[self.x+1][self.y].tiletype:
-                self.lastx = self.x
                 self.x += 1
 
     def light(self, board):
@@ -334,6 +337,18 @@ class Character:
                 DISPLAYSURF.blit(lmove,(left, top))
             elif self.lastmove == RIGHT:
                 DISPLAYSURF.blit(rmove,(left, top))
+
+class Treasure:
+    def __init__(self):
+        coordList = [[3,9],[3,1],[12,7],[12,4],[14,7],[6,0]]
+        coord = random.choice(coordList)
+        self.x = coord[0]
+        self.y = coord[1]
+
+    def drawTreasure(self, board):
+        if board[self.x][self.y].light:
+            left, top = getLeftTopOfTile(self.x, self.y)
+            DISPLAYSURF.blit(treasureSprite,(left, top))
 
 if __name__ == '__main__':
     main()
