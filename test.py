@@ -28,6 +28,9 @@ MESSAGECOLOR = WHITE
 XMARGIN = int((WINDOWWIDTH - (TILESIZE * BOARDWIDTH + (BOARDWIDTH-1))) / 2)
 YMARGIN = int((WINDOWHEIGHT - (TILESIZE * BOARDHEIGHT + (BOARDHEIGHT-1))) / 2)
 
+STEPS_TAKEN = 0
+MOVE_LIMIT = 150
+
 UP = 'up'
 DOWN = 'down'
 LEFT = 'left'
@@ -89,6 +92,7 @@ def main():
         drawBoard(mainBoard)
         character.drawChar()
         checkForQuit()
+        label = check_for_win(mainBoard)
         for event in pygame.event.get():
             if event.type == KEYUP:
                 if event.key in (K_LEFT, K_a):
@@ -100,7 +104,9 @@ def main():
                 elif event.key in (K_DOWN, K_s):
                     character.move(DOWN, mainBoard)
         character.light(mainBoard)
-
+        DISPLAYSURF.blit(label, (0,0))
+        step_count = BASICFONT.render("Steps Left: "+str(MOVE_LIMIT - STEPS_TAKEN), 1, (255,0,0))
+        DISPLAYSURF.blit(step_count, (600,0))
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
@@ -189,6 +195,23 @@ def generateBoard():
     board[13][8] = Tile('dlwall')
     board[14][8] = Tile('redge')
     return board
+
+
+def check_for_win(board):
+    total_condition = BOARDHEIGHT * BOARDWIDTH
+    light_sum = 0
+    for column in board:
+        for tile in column:
+            if tile.light >0:
+                light_sum += 1
+    if STEPS_TAKEN > MOVE_LIMIT:
+        return BASICFONT.render("You lost to the Powers of Darkness", 1, (255,0,0))
+    elif light_sum == total_condition:
+        return BASICFONT.render("You Win! You lit up the night.", 1, (0,255,0))
+    elif MOVE_LIMIT - STEPS_TAKEN <15:
+        return BASICFONT.render("DANGER DANGER", 1, (255,0,0))
+    else:
+        return BASICFONT.render("You Better get moving", 1, (255,255,0))
 
 def drawBoard(board):
     DISPLAYSURF.fill(BGCOLOR)
@@ -302,7 +325,8 @@ class Character:
             if self.x < BOARDWIDTH - 1 and 'ground' in board[self.x+1][self.y].tiletype:
                 self.lastx = self.x
                 self.x += 1
-
+        global STEPS_TAKEN
+        STEPS_TAKEN += 1
     def light(self, board):
         board[self.x][self.y].brighten()
         if self.x > 0:
