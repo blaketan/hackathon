@@ -120,13 +120,17 @@ class Character:
 
     def move(self, move):
         if move == UP:
-            self.y -= 1
+            if self.y > 0:
+                self.y -= 1
         elif move == DOWN:
-            self.y += 1
+            if self.y < BOARDHEIGHT - 1:
+                self.y += 1
         elif move == LEFT:
-            self.x -= 1
+            if self.x > 0:
+                self.x -= 1
         elif move == RIGHT:
-            self.x += 1
+            if self.x < BOARDWIDTH - 1:
+                self.x += 1
 
     def light(self, board):
         board[self.x][self.y].brighten()
